@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {% for article in articles %}
+        {% if article.photo %}
+            <div class="card mb-3" style="max-width: 540px;">
+              <div class="row no-gutters">
+                <div class="col-md-4">
+                  <img src="{{ MEDIA_URL }}{{ article.photo }}" class="card-img news"  alt="...">
+                </div>
+                <div class="col-md-8">
+                  <div class="card-body">
+                    <h5 class="card-title"><a href="{% url 'article' pk=article.id %}">{{ article.title }}</a></h5>
+                    <p class="card-text">{{ article.prev }}</p>
+                    <p class="card-text"><small class="text-muted">{{ article.created_date }}</small></p>
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'delete' pk=article.id %}" class="btn btn-primary">Удалить</a>
+                        <a href="{% url 'edit' pk=article.id %}" class="btn btn-primary">Изменить</a>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            </div>
+        {% else %}
+            <div class="card w-50">
+                <div class="card-body">
+                    <h5 class="card-title"><a href="{% url 'article' pk=article.id %}">{{ article.title }}</a></h5>
+                    <p class="card-text">{{ article.prev }}</p>
+                    <p class="card-text"><small class="text-muted">{{ article.created_date }}</small></p>
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'delete' pk=article.id %}" class="btn btn-primary">Удалить</a>
+                        <a href="{% url 'edit' pk=article.id %}" class="btn btn-primary">Изменить</a>
+                    {% endif %}
+                </div>
+            </div>
+        {% endif %}
+    {% endfor %}
+    {% if user.is_authenticated %}
+        <a href="{% url 'write_art' %}" class="btn btn-primary">Добавить статью</a>
+    {% endif %}
+{% endblock %}

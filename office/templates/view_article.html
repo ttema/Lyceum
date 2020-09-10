@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>{{ article.0.title }}</h1>
+    <p>
+        {{ article.0.text }}
+    </p>
+    <p>
+        {{ article.0.created_date }}
+    </p>
+
+    {% if article.0.photo %}
+        <p>
+            <img src="{{ MEDIA_URL }}{{ article.0.photo }}">
+        </p>
+    {% endif %}
+
+    {% if user.is_authenticated %}
+        <a href="{% url 'delete' pk=article.0.id %}" class="btn btn-primary">Удалить</a>
+        <a href="{% url 'edit' pk=article.0.id %}" class="btn btn-primary">Изменить</a>
+    {% endif %}
+{% endblock %}

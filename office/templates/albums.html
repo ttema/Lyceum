@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {% if user.is_authenticated %}
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit" value="Создать альбом">
+        </form>
+    {% endif %}
+    {% for album in albums %}
+        <a href="{% url 'view_album' pk=album.id %}">{{ album.name }}</a>
+        <p>{{ album.description }}</p>
+    {% endfor %}
+{% endblock %}

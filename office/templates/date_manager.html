@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {% for period in periods %}
+        <p>С {{ period.start_date }} по {{ period.end_date }} - {{ period.description }}</p>
+        <a href="{% url 'period_delete' pk=period.id %}" class="btn btn-primary">Удалить</a>
+    {% endfor %}
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Опубликовать">
+    </form>
+{% endblock %}

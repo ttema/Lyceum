@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {% for period in periods %}
+        <p>С {{ period.start_date }} по {{ period.end_date }} - {{ period.description }}</p>
+    {% endfor %}
+    {{ week }}
+{% endblock %}
