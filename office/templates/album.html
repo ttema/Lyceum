@@ -7,4 +7,7 @@
         {{ form.as_p }}
         <input type="submit" value="Опубликовать">
     </form>
+    {% for photo in photos %}
+        <img src="{{ MEDIA_URL }}{{ photo.photo }}" class="card-img news"  alt="...">
+    {% endfor %}
 {% endblock %}

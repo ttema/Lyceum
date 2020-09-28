@@ -30,9 +30,9 @@ class TimePeriod(models.Model):
 
 class Album(models.Model):
     name = models.CharField(max_length=200, default='')
-    description = models.CharField(blank=True, max_length=200, default='')
+    description = models.TextField(blank=True, max_length=200, default='')
 
 
 class Photo(models.Model):
-    photo = models.ImageField(blank=True, upload_to='articles_images', default=None)
+    photo = models.ImageField(blank=True, upload_to='gallery', default=None)
     album = models.ForeignKey(Album, on_delete=models.CASCADE)

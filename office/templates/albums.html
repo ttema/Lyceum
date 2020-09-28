@@ -11,5 +11,6 @@
     {% for album in albums %}
         <a href="{% url 'view_album' pk=album.id %}">{{ album.name }}</a>
         <p>{{ album.description }}</p>
+        <a href="{% url 'del_album' pk=album.id %}">Удалить</a>
     {% endfor %}
 {% endblock %}

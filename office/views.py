@@ -1,6 +1,7 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
-from django.http import HttpResponseRedirect
+from django.shortcuts import render, redirect
+from django.urls import reverse
+
 from .models import Article, TimePeriod, Photo, Album
 from .forms import ArticleForm, TimePeriodForm, PhotoForm, AlbumForm
 import datetime
@@ -8,7 +9,7 @@ import datetime
 
 def tape(request):
     articles = Article.objects.all()
-    return render(request, 'tape.html', context={'articles': articles})
+    return render(request, 'tape.html', context={'articles': reversed(articles)})
 
 
 def view_article(request, pk):
@@ -24,12 +25,11 @@ def write_article(request):
         article.title = request.POST.get('title')
         article.prev = request.POST.get('prev')
         article.text = request.POST.get('text')
-        article
         if request.FILES.get('photo') is not None:
             article.photo = request.FILES.get('photo')
         article.create_preview()
         article.save()
-        return HttpResponseRedirect('/')
+        return redirect('/')
     return render(request, 'add_article.html', context={'form': form})
 
 
@@ -37,12 +37,25 @@ def write_article(request):
 def del_article(request, pk):
     article = Article.objects.filter(id=pk)
     article.delete()
-    return HttpResponseRedirect('/')
+    return redirect('/')
 
 
+'''
 @login_required
 def edit_article(request, pk):
-    return HttpResponseRedirect('/')
+    ed_article = Article.objects.filter(id=pk)
+    form = ArticleForm(instance=ed_article[0])
+    if request.method == 'POST':
+        form = ArticleForm(request.POST)
+        article = form.save(commit=False)
+        art_id = ed_article[0].id
+        article.id = art_id
+        article.photo = ed_article[0].photo
+        ed_article[0].delete
+        article.save()
+        return redirect('tape')
+    return render(request, 'add_article.html', context={'form': form})
+'''
 
 
 @login_required
@@ -53,7 +66,7 @@ def view_periods(request):
         if form.is_valid():
             period = form.save(commit=False)
             period.save()
-            return HttpResponseRedirect('periods_manager')
+            return redirect('periods_manager')
     periods = TimePeriod.objects.all()
     return render(request, 'date_manager.html', context={'periods': periods, 'form': form})
 
@@ -62,7 +75,7 @@ def view_periods(request):
 def del_period(request, pk):
     period = TimePeriod.objects.filter(id=pk)
     period.delete()
-    return HttpResponseRedirect('/periods_manager')
+    return redirect('/periods_manager')
 
 
 def view_timetable(request):
@@ -85,6 +98,7 @@ def view_timetable(request):
     return render(request, "timetable.html", context={'periods': periods_to_show, 'week': week})
 
 
+@login_required
 def add_album(request):
     albums = Album.objects.all()
     form = AlbumForm
@@ -93,7 +107,7 @@ def add_album(request):
         if form.is_valid():
             album = form.save(commit=False)
             album.save()
-            return HttpResponseRedirect('albums')
+            return redirect('albums')
     return render(request, "albums.html", context={'albums': albums, 'form': form})
 
 
@@ -102,9 +116,16 @@ def view_album(request, pk):
     photos = Photo.objects.filter(album__id=album[0].id)
     form = PhotoForm
     if request.method == 'POST':
-        form = PhotoForm(request.POST)
+        form = PhotoForm(request.POST, request.FILES)
         if form.is_valid():
             photo = form.save(commit=False)
             photo.album = album[0]
             photo.save()
     return render(request, "album.html", context={'form': form, 'photos': photos})
+
+
+@login_required
+def del_album(request, pk):
+    album = Album.objects.filter(id=pk)
+    album.delete()
+    return redirect('/albums')
