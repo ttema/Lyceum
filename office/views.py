@@ -9,7 +9,7 @@ import datetime
 
 def tape(request):
     articles = Article.objects.all()
-    return render(request, 'tape.html', context={'articles': reversed(articles)})
+    return render(request, 'tape.html', context={'articles': articles})
 
 
 def view_article(request, pk):
@@ -66,7 +66,7 @@ def view_periods(request):
         if form.is_valid():
             period = form.save(commit=False)
             period.save()
-            return redirect('periods_manager')
+            return redirect('periods_view')
     periods = TimePeriod.objects.all()
     return render(request, 'date_manager.html', context={'periods': periods, 'form': form})
 
@@ -75,7 +75,7 @@ def view_periods(request):
 def del_period(request, pk):
     period = TimePeriod.objects.filter(id=pk)
     period.delete()
-    return redirect('/periods_manager')
+    return redirect('periods_view')
 
 
 def view_timetable(request):
@@ -98,7 +98,6 @@ def view_timetable(request):
     return render(request, "timetable.html", context={'periods': periods_to_show, 'week': week})
 
 
-@login_required
 def add_album(request):
     albums = Album.objects.all()
     form = AlbumForm

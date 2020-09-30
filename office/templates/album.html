@@ -2,11 +2,13 @@
 
 {% block content %}
     {{album.name}}
-    <form method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" value="Опубликовать">
-    </form>
+    {% if user.is_authenticated %}
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit" value="Опубликовать">
+        </form>
+    {% endif %}
     {% for photo in photos %}
         <img src="{{ MEDIA_URL }}{{ photo.photo }}" class="card-img news"  alt="...">
     {% endfor %}
